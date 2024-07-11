@@ -12,7 +12,7 @@ public class Snake : MonoBehaviour
     private float gridMoveTimer;
     private float gridMoveTimerMax;
 
-    private int snakeBodySize;
+    private float snakeBodySize;
     private List<Vector2Int> snakeMovePositionList;
 
     private LevelGrid levelGrid;
@@ -30,7 +30,7 @@ public class Snake : MonoBehaviour
         gridMoveDirection = new Vector2Int(1, 0);
 
         snakeMovePositionList = new List<Vector2Int>();
-        snakeBodySize = 1;
+        snakeBodySize = 1f;
     }
     
     private void Update()
@@ -95,12 +95,17 @@ public class Snake : MonoBehaviour
             for (int i = 0; i < snakeMovePositionList.Count; i++)
             { 
                 Vector2Int snakeMovePosition = snakeMovePositionList[i];
-                World_Sprite worldSprite = World_Sprite.Create(new Vector3(snakeMovePosition.x, snakeMovePosition.y), Vector3.one * .5f, Color.white);
-                FunctionTimer.Create(worldSprite.DestroySelf, gridMoveTimerMax);
+
+                //World_Sprite worldSprite = World_Sprite.Create(new Vector3(snakeMovePosition.x, snakeMovePosition.y), Vector3.one * .5f, Color.white);
+                //FunctionTimer.Create(worldSprite.DestroySelf, gridMoveTimerMax);
+
+                GameObject snakeBody = MyUtils.CreateSpriteGameObject(new Vector3(snakeMovePosition.x, snakeMovePosition.y), new Vector3(0.5f, 0.5f, 1), GameAssets.Instance.snakeBodySprite);
+                FunctionTimer.Create(() => MyUtils.DestroyGameObject(snakeBody), gridMoveTimerMax);
+
             }
 
-                transform.position = new Vector3(gridPosition.x, gridPosition.y);
-            transform.eulerAngles = new Vector3(0, 0, GetAngleFromVector(gridMoveDirection) - 90);
+            transform.position = new Vector3(gridPosition.x, gridPosition.y);
+            transform.eulerAngles = new Vector3(0, 0, GetAngleFromVector(gridMoveDirection) + 90);
 
             levelGrid.SnakeMoved(gridPosition);
         }

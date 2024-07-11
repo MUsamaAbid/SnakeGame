@@ -14,5 +14,6 @@ public class GameAssets : MonoBehaviour
     #endregion
     
     public Sprite snakeHeadSprite;
+    public Sprite snakeBodySprite;
     public Sprite foodSprite;
 }
