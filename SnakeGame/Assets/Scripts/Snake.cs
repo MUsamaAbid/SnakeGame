@@ -25,12 +25,13 @@ public class Snake : MonoBehaviour
     private void Awake()
     {
         gridPosition = new Vector2Int(0, 0);
-        gridMoveTimerMax = 0.33f;
+        //gridMoveTimerMax = 0.75f;
+        gridMoveTimerMax = 0.1f;
         gridMoveTimer = gridMoveTimerMax;
         gridMoveDirection = new Vector2Int(1, 0);
 
         snakeMovePositionList = new List<Vector2Int>();
-        snakeBodySize = 1f;
+        snakeBodySize = 0;
     }
     
     private void Update()
@@ -87,6 +88,12 @@ public class Snake : MonoBehaviour
 
             gridPosition += gridMoveDirection;
 
+            bool snakeAteFood = levelGrid.TrySnakeEatFood(gridPosition);
+            if (snakeAteFood)
+            {
+                snakeBodySize++;
+            }
+
             if (snakeMovePositionList.Count >= snakeBodySize + 1)
             {
                 snakeMovePositionList.RemoveAt(snakeMovePositionList.Count - 1);
@@ -107,7 +114,7 @@ public class Snake : MonoBehaviour
             transform.position = new Vector3(gridPosition.x, gridPosition.y);
             transform.eulerAngles = new Vector3(0, 0, GetAngleFromVector(gridMoveDirection) + 90);
 
-            levelGrid.SnakeMoved(gridPosition);
+           
         }
     }
 
@@ -118,8 +125,17 @@ public class Snake : MonoBehaviour
         return n;
     }
 
+    //Returns grid position occupied by the snake head
     public Vector2Int GetGridPosition()
     {
         return gridPosition;
+    }
+
+    //Return the full list of grid positions occupied by the snake, body + head
+    public List<Vector2Int> GetFullSnakeGridPositionList()
+    {
+        List<Vector2Int> gridPositionList = new List<Vector2Int>() { gridPosition };
+        gridPositionList.AddRange(snakeMovePositionList);
+        return gridPositionList;
     }
 }
